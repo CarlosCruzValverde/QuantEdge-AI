@@ -2,10 +2,8 @@ from fastapi import APIRouter
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from app.models.sentiment import AnalysisRequest, AnalysisResponse
 
-class AnalysisRequest(BaseModel):
-    text: str
 
 # Load environment variables
 load_dotenv()
@@ -13,13 +11,17 @@ load_dotenv()
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 
-@router.post("/analyze")
+@router.post("/analyze", response_model=AnalysisResponse)
 async def analyze_sentiment(request: AnalysisRequest):
     response = client.chat.completions.create(
-        model="gpt-4-turbo",
-        messages=[{
-            "role": "system",
-            "content": "Analyze financial sentiment. Respond with JSON."
-        }]
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Analyze financial sentiment..."},
+            {"role": "user", "content": request.text}
+        ]
     )
-    return response.choices[0].message.content
+    return AnalysisResponse(
+        sentiment="bullish",  # Mock response - parse real API response here
+        confidence=0.85,
+        reasoning=response.choices[0].message.content
+    )

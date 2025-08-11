@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import market, ai
+from app.routes import market, ai
 
 app = FastAPI(title="QuantEdge API")
 
