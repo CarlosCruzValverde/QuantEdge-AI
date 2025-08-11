@@ -26,12 +26,27 @@ export const analyzeSentiment = async (text: string) => {
     return handleResponse(response);
 };
 
+// Define an interface for your WebSocket data
+interface MarketWebSocketData {
+    // Define the expected properties and their types
+    symbol: string;
+    price: number;
+    timestamp: string;
+    // Add other relevant fields based on your API response
+    // Example:
+    // change: number;
+    // volume: number;
+}
+
 // WebSocket Connection (for real-time data)
-export const setupMarketWebSocket = (symbol: string, onMessage: (data: any) => void) => {
+export const setupMarketWebSocket = (
+    symbol: string,
+    onMessage: (data: MarketWebSocketData) => void
+) => {
     const socket = new WebSocket(`ws://${BASE_URL.replace(/^https?:\/\//, "")}/api/market/ws/${symbol}`);
 
     socket.onmessage = (event) => {
-        onMessage(JSON.parse(event.data));
+        onMessage(JSON.parse(event.data) as MarketWebSocketData);
     };
 
     return () => socket.close();
