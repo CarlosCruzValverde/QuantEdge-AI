@@ -14,7 +14,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 @router.post("/analyze", response_model=AnalysisResponse)
 async def analyze_sentiment(request: AnalysisRequest):
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-turbo",
         messages=[
             {"role": "system", "content": "Analyze financial sentiment..."},
             {"role": "user", "content": request.text}
