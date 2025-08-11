@@ -24,15 +24,29 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["llamaindex"],
 
   // 4. Security Headers
-  headers: async () => [
-    {
-      source: "/(.*)",
-      headers: [
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "Content-Security-Policy", value: "default-src 'self'" },
-      ],
-    },
-  ],
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self'",
+              `connect-src 'self' ${process.env.BACKEND_URL || "http://localhost:8000"}`,
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data:",
+              "font-src 'self'",
+              "frame-src 'none'",
+              "object-src 'none'"
+            ].join('; ')
+          },
+        ],
+      },
+    ];
+  },
 };
 
 // 5. Bundle Analyzer (Conditional)
