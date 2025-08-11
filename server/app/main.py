@@ -7,7 +7,7 @@ app = FastAPI(title="QuantEdge API")
 # CORS (allow frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev URL
+    allow_origins=["*"],  # Next.js dev URL
     allow_methods=["*"],
     allow_headers=["*"],
 )
